@@ -1,9 +1,8 @@
-import generateSymbol from "./generateSymbol";
 const rp = require("request-promise").defaults({ json: true });
 
-const getAllSymbols = async (api_root, config) => {
-  const data = await rp(api_root);
-  let allSymbols = [];
+const getSymbols = async (api_root, config) => {
+const data = await rp(api_root);
+  let symbolData = [];
 
   for (const exchange of config.exchanges) {
     const pairs = data.Data.exchanges[exchange.value].pairs;
@@ -11,11 +10,9 @@ const getAllSymbols = async (api_root, config) => {
     for (const leftPairPart of Object.keys(pairs)) {
       const symbolPairs = Object.keys(pairs[leftPairPart].tsyms);
       const symbols = symbolPairs.map((rightPairPart) => {
-        const symbol = generateSymbol(
-          exchange.value,
-          leftPairPart,
-          rightPairPart
-        );
+        const short = `${leftPairPart}/${rightPairPart}`;
+        const full =  `${exchange.value}:${short}`;
+        const symbol = { short, full }
         return {
           symbol: symbol.short,
           full_name: symbol.full,
@@ -25,10 +22,10 @@ const getAllSymbols = async (api_root, config) => {
         };
       });
 
-      allSymbols = [...allSymbols, ...symbols];
+      symbolData = [...symbolData, ...symbols];
     }
   }
-  return allSymbols;
-};
+  return symbolData;
+}
 
-export default getAllSymbols;
+export default getSymbols;

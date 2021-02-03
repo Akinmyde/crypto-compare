@@ -1,6 +1,6 @@
 import historyProvider from "./historyProvider";
 import stream from "./stream";
-import getAllSymbols from "../../../utils/getAllSymbols";
+import getSymbols from "../../../helpers";
 
 const apiKey = "3cccf05653ee303b8b4b947ef9e6f6a072e589b4d69504de18b064e8a4736954";
 
@@ -36,7 +36,7 @@ const TvChartProvider = {
   ) => {
     console.log("====Search Symbols running");
 
-    const symbols = await getAllSymbols(api_root, config);
+    const symbols = await getSymbols(api_root, config);
     const newSymbols = symbols.filter((symbol) => {
       const isExchangeValid = exchange === "" || symbol.exchange === exchange;
       const isFullSymbolContainsInput =
